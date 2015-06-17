@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">listy</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="add_todo_hint_label">Add new item here</string>
+    <string name="add_button_label">Add</string>
+    <string name="today_label">now</string>
+    <string name="this_week_label">soon</string>
+</resources>
