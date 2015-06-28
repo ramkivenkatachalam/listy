@@ -32,10 +32,10 @@ public class TodoItemHolder {
         String dueLable = null;
         if (due != null) {
             Date currentDate = new Date();
-            long delta = currentDate.getTime() - due.getTime();
-            if (delta < 86400) {
+            long delta = (due.getTime() - currentDate.getTime())/1000;
+            if (delta < 86400L) {
                 dueLable = "now";
-            } else if (delta < (86400 * 7)) {
+            } else if (delta < (86400L * 7)) {
                 dueLable = "soon";
             }
         }

@@ -50,7 +50,7 @@ public class TodoAdapter extends ArrayAdapter<TodoItem> {
         {
             holder = (TodoItemHolder)row.getTag();
         }
-        holder.updateDesc(todoItem.getDesc());
+        holder.updateDesc(todoItem.getTitle());
         holder.updateDueDate(todoItem.getDueDate());
 
         if (position % 2 == 1) {

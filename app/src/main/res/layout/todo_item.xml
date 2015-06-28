@@ -13,6 +13,7 @@
         android:id="@+id/tvTodoText"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
+        android:fontFamily="Trebuchet MS"
         android:layout_toStartOf="@+id/btnDueLabel" />
 
     <Button
