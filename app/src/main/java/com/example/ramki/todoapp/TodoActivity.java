@@ -2,6 +2,8 @@ package com.example.ramki.todoapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +13,7 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,53 +22,35 @@ import java.util.Date;
 import java.util.List;
 
 
-public class TodoActivity extends Activity {
-    private List<TodoItem> todoItems = new ArrayList<>();
-    private TodoAdapter todoAdapter;
-    private ListView lvItems;
-    private EditText etNew;
-    private NumberPicker npDueWhen;
-    private TodoListManager todoListManager;
+public class TodoActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_todo);
-        RelativeLayout rl = (RelativeLayout) findViewById(R.id.rl);
-        lvItems = (ListView) findViewById(R.id.lvItems);
-        etNew = (EditText) findViewById(R.id.etNew);
-        npDueWhen = (NumberPicker) findViewById(R.id.npDueWhen);
+        setContentView(R.layout.activity_main);
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.content_fragment_container) != null) {
 
-        npDueWhen.setDisplayedValues((String[]) Arrays.asList("now", "soon", "later").toArray());
-        npDueWhen.setMinValue(0);
-        npDueWhen.setMaxValue(2);
-        npDueWhen.setVisibility(View.GONE);
-        todoListManager = new TodoListDBManager(this);
-        try {
-            todoItems = todoListManager.readItems();
-        } catch (TodoListManagerException e) {
-            e.printStackTrace();
-        }
-        todoAdapter = new TodoAdapter(this, R.layout.todo_item, todoItems);
-        lvItems.setAdapter(todoAdapter);
-        setupListViewListener();
-    }
-
-    private void setupListViewListener() {
-        lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                TodoItem deleted = todoItems.get(position);
-                try {
-                    todoListManager.deleteItem(deleted);
-                } catch (TodoListManagerException e) {
-                    e.printStackTrace();
-                }
-                todoItems.remove(position);
-                todoAdapter.notifyDataSetChanged();
-                return false;
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
             }
-        });
+
+            // Create a new Fragment to be placed in the activity layout
+            Fragment todoListFragment = new TodoListFragment();
+
+            // In case this activity was started with special instructions from an
+            // Intent, pass the Intent's extras to the fragment as arguments
+            todoListFragment.setArguments(getIntent().getExtras());
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                                       .add(R.id.content_fragment_container, todoListFragment)
+                                       .commit();
+        }
     }
 
     @Override
@@ -91,20 +75,4 @@ public class TodoActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onAddedItem(View view) throws IOException {
-        String todoText = etNew.getText().toString();
-        if (todoText.isEmpty()) {
-            return;
-        }
-        TodoItem newTodo = new TodoItem(todoText, null, new Date(), null);
-        try {
-            newTodo = todoListManager.addItem(newTodo);
-        } catch (TodoListManagerException e) {
-            e.printStackTrace();
-        }
-        todoItems.add(newTodo);
-        Collections.sort(todoItems);
-        todoAdapter.notifyDataSetChanged();
-        etNew.setText("");
-    }
 }

@@ -35,52 +35,14 @@
             android:textStyle="bold|italic" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/content"
+    <FrameLayout
+        android:id="@+id/content_fragment_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/header">
 
-        <ListView
-            android:id="@+id/lvItems"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/btnAdd"
-            android:layout_alignParentTop="true"
-            android:dividerHeight="3dp"
-            />
+    </FrameLayout>
 
-        <EditText
-            android:id="@+id/etNew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/npDueWhen"
-            android:hint="@string/add_todo_hint_label" />
-
-        <NumberPicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/npDueWhen"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@+id/btnAdd"
-            android:orientation="vertical"
-             />
-
-        <Button
-            android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="onAddedItem"
-            android:text="@string/add_button_label" />
-
-
-    </RelativeLayout>
 
 
 </RelativeLayout>

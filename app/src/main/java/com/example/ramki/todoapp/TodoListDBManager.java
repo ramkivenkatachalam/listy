@@ -101,7 +101,7 @@ public class TodoListDBManager extends SQLiteOpenHelper implements TodoListManag
             Long dueDateLong = cursor.getLong(cursor.getColumnIndexOrThrow(
                 TodoEntry.COLUMN_NAME_DUE_DATE));
             Date dueDate = null;
-            if (dueDateLong != null) {
+            if (dueDateLong != null && dueDateLong != 0) {
                 dueDate = new Date(dueDateLong);
             }
             TodoItem loadedTodo = new TodoItem(id, title, desc, createdAt, dueDate);
