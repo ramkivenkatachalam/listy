@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,6 +24,7 @@ import java.util.List;
  * Created by ramki on 6/28/15.
  */
 public class TodoListFragment extends Fragment {
+
     private List<TodoItem> todoItems = new ArrayList<>();
     private TodoAdapter todoAdapter;
     private ListView lvItems;
@@ -34,7 +36,7 @@ public class TodoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View todoListView =  inflater.inflate(R.layout.fragment_todo_list, container, false);
+        View todoListView = inflater.inflate(R.layout.fragment_todo_list, container, false);
         RelativeLayout rl = (RelativeLayout) todoListView.findViewById(R.id.rl);
         lvItems = (ListView) todoListView.findViewById(R.id.lvItems);
         etNew = (EditText) todoListView.findViewById(R.id.etNew);
@@ -69,6 +71,23 @@ public class TodoListFragment extends Fragment {
                 return false;
             }
         });
+        lvItems.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fragment todoDetailsFragment = new TodoDetailsFragment();
+                Bundle args = new Bundle();
+                args.putParcelable("todo", todoItems.get(position));
+                todoDetailsFragment.setArguments(args);
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getActivity().getSupportFragmentManager().beginTransaction()
+                             .replace(R.id.content_fragment_container, todoDetailsFragment)
+                             .addToBackStack(null)
+                             .commit();
+            }
+
+
+        });
+
         btnAdd.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

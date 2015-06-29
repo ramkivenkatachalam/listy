@@ -1,12 +1,16 @@
 package com.example.ramki.todoapp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by ramki on 6/16/15.
  */
-public class TodoItem implements Comparable<TodoItem>, Serializable {
+public class TodoItem implements Comparable<TodoItem>, Serializable, Parcelable {
     private String title;
     private String desc;
     private Date dueDate;
@@ -112,4 +116,47 @@ public class TodoItem implements Comparable<TodoItem>, Serializable {
         return this.dueDate.compareTo(another.dueDate);
     }
 
+    protected TodoItem(Parcel in) {
+        title = in.readString();
+        desc = in.readString();
+        long tmpDueDate = in.readLong();
+        dueDate = tmpDueDate != -1 ? new Date(tmpDueDate) : null;
+        long tmpCreatedAt = in.readLong();
+        createdAt = tmpCreatedAt != -1 ? new Date(tmpCreatedAt) : null;
+        deleted = in.readInt();
+        _ID = in.readByte() == 0x00 ? null : in.readLong();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(desc);
+        dest.writeLong(dueDate != null ? dueDate.getTime() : -1L);
+        dest.writeLong(createdAt != null ? createdAt.getTime() : -1L);
+        dest.writeInt(deleted);
+        if (_ID == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(_ID);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<TodoItem> CREATOR = new Parcelable.Creator<TodoItem>() {
+        @Override
+        public TodoItem createFromParcel(Parcel in) {
+            return new TodoItem(in);
+        }
+
+        @Override
+        public TodoItem[] newArray(int size) {
+            return new TodoItem[size];
+        }
+    };
 }
