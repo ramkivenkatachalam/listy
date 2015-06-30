@@ -6,4 +6,5 @@
     <string name="add_button_label">Add</string>
     <string name="today_label">now</string>
     <string name="this_week_label">soon</string>
+    <string name="todo_notes_hint_label">add any notes here...</string>
 </resources>

@@ -71,6 +71,7 @@ public class TodoListFragment extends Fragment {
                 return false;
             }
         });
+        /*
         lvItems.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -87,6 +88,7 @@ public class TodoListFragment extends Fragment {
 
 
         });
+        */
 
         btnAdd.setOnClickListener(new OnClickListener() {
             @Override

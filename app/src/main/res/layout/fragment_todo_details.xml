@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+    >
 
-    <TextView
+
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="New Text"
+        android:layout_height="40dp"
         android:id="@+id/tvTodoTitle"
-        android:gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:paddingLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:fontFamily="Trebuchet MS"
+        android:layout_marginBottom="10dp"
+        android:background="#EEF8F8"
+        android:layout_alignParentTop="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="#ffffff"
+        android:alpha="0.75"
+        android:layout_below="@+id/tvTodoTitle">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:gravity="top"
+            android:id="@+id/textView"
+            android:layout_alignParentStart="true"
+            android:layout_above="@+id/seekBar"
+            android:layout_alignParentTop="true"
+            android:hint="@string/todo_notes_hint_label"/>
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:id="@+id/seekBar"
+            android:layout_marginBottom="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"/>
+
+
+    </RelativeLayout>
+
 </RelativeLayout>
