@@ -28,7 +28,7 @@ class ReaderViewPagerTransformer implements ViewPager.PageTransformer {
     private static final float MIN_SCALE_ZOOM = 0.85f;
     private static final float MIN_ALPHA_ZOOM = 0.5f;
     private static final float SCALE_FACTOR_SLIDE = 0.85f;
-    private static final float MIN_ALPHA_SLIDE = 0.35f;
+    private static final float MIN_ALPHA_SLIDE = 0.15f;
 
     public void transformPage(View page, float position) {
         final float alpha;
@@ -44,7 +44,7 @@ class ReaderViewPagerTransformer implements ViewPager.PageTransformer {
                 if (position < 0 && position > -1) {
                     // this is the page to the left
                     scale = Math.abs(Math.abs(position) - 1) * (1.0f - SCALE_FACTOR_SLIDE) + SCALE_FACTOR_SLIDE;
-                    alpha = Math.max(MIN_ALPHA_SLIDE, 1 - Math.abs(position));
+                    alpha = Math.max(MIN_ALPHA_SLIDE, 1 - Math.abs(position)) / 2;
                     int pageWidth = page.getWidth();
                     float translateValue = position * -pageWidth;
                     if (translateValue > -pageWidth) {
