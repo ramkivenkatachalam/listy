@@ -2,6 +2,8 @@ package com.example.ramki.todoapp;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +32,8 @@ public class TodoListFragment extends Fragment {
     private EditText etNew;
     private Button btnAdd;
     private TodoListManager todoListManager;
+    private PagerAdapter pagerAdapter;
+    private ViewPager pager;
 
 
     public void setTodoItems(List<TodoItem> todoItems) {
@@ -69,27 +73,16 @@ public class TodoListFragment extends Fragment {
                 }
                 todoItems.remove(position);
                 todoAdapter.notifyDataSetChanged();
+                pagerAdapter.notifyDataSetChanged();
                 return false;
             }
         });
-        /*
         lvItems.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment todoDetailsFragment = new TodoDetailsFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("todo", todoItems.get(position));
-                todoDetailsFragment.setArguments(args);
-                // Add the fragment to the 'fragment_container' FrameLayout
-                getActivity().getSupportFragmentManager().beginTransaction()
-                             .replace(R.id.content_fragment_container, todoDetailsFragment)
-                             .addToBackStack(null)
-                             .commit();
+                pager.setCurrentItem(position+1, true);
             }
-
-
         });
-        */
 
         btnAdd.setOnClickListener(new OnClickListener() {
             @Override
@@ -107,10 +100,18 @@ public class TodoListFragment extends Fragment {
                 todoItems.add(newTodo);
                 Collections.sort(todoItems);
                 todoAdapter.notifyDataSetChanged();
+                pagerAdapter.notifyDataSetChanged();
                 etNew.setText("");
             }
         });
 
     }
 
+    public void setPagerAdapter(PagerAdapter pagerAdapter) {
+        this.pagerAdapter = pagerAdapter;
+    }
+
+    public void setPager(ViewPager pager) {
+        this.pager = pager;
+    }
 }

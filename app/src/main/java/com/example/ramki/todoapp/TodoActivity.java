@@ -89,6 +89,8 @@ public class TodoActivity extends FragmentActivity {
                 TodoListFragment todoListFragment =  new TodoListFragment();
                 todoListFragment.setTodoItems(todoItems);
                 todoListFragment.setTodoListManager(todoListManager);
+                todoListFragment.setPagerAdapter(mPagerAdapter);
+                todoListFragment.setPager(mPager);
                 return todoListFragment;
 
             } else {
