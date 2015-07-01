@@ -30,6 +30,9 @@ import java.util.List;
 
 
 public class TodoActivity extends FragmentActivity {
+    private List<TodoItem> todoItems = new ArrayList<>();
+    private TodoListManager todoListManager;
+
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -46,11 +49,18 @@ public class TodoActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        todoListManager = new TodoListDBManager(this);
+        try {
+            todoItems = todoListManager.readItems();
+        } catch (TodoListManagerException e) {
+            e.printStackTrace();
+        }
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
-        mPager.setPageTransformer(true, new ReaderViewPagerTransformer(TransformType.SLIDE_OVER));
+        mPager.setPageTransformer(false, new ReaderViewPagerTransformer(TransformType.SLIDE_OVER));
     }
 
     @Override
@@ -76,13 +86,16 @@ public class TodoActivity extends FragmentActivity {
         public Fragment getItem(int position) {
             if (position == 0) {
                 // Create a new Fragment to be placed in the activity layout
-                return new TodoListFragment();
+                TodoListFragment todoListFragment =  new TodoListFragment();
+                todoListFragment.setTodoItems(todoItems);
+                todoListFragment.setTodoListManager(todoListManager);
+                return todoListFragment;
 
             } else {
                 // TODO: set todoItem arg for the fragment
                 Fragment todoDetailsFragment = new TodoDetailsFragment();
                 Bundle args = new Bundle();
-                args.putParcelable("todo", new TodoItem(0L, "test todo", "blah blah...", new Date(), null));
+                args.putParcelable("todo", todoItems.get(position-1));
                 todoDetailsFragment.setArguments(args);
                 return todoDetailsFragment;
             }
@@ -90,8 +103,7 @@ public class TodoActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            //TODO: fix the hard coded count
-            return 5;
+            return todoItems.size()+1;
         }
     }
 

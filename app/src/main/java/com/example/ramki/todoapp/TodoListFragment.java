@@ -24,13 +24,21 @@ import java.util.List;
  * Created by ramki on 6/28/15.
  */
 public class TodoListFragment extends Fragment {
-
-    private List<TodoItem> todoItems = new ArrayList<>();
+    private List<TodoItem> todoItems;
     private TodoAdapter todoAdapter;
     private ListView lvItems;
     private EditText etNew;
     private Button btnAdd;
     private TodoListManager todoListManager;
+
+
+    public void setTodoItems(List<TodoItem> todoItems) {
+        this.todoItems = todoItems;
+    }
+
+    public void setTodoListManager(TodoListManager todoListManager) {
+        this.todoListManager = todoListManager;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,13 +49,6 @@ public class TodoListFragment extends Fragment {
         lvItems = (ListView) todoListView.findViewById(R.id.lvItems);
         etNew = (EditText) todoListView.findViewById(R.id.etNew);
         btnAdd = (Button) todoListView.findViewById(R.id.btnAdd);
-
-        todoListManager = new TodoListDBManager(getActivity());
-        try {
-            todoItems = todoListManager.readItems();
-        } catch (TodoListManagerException e) {
-            e.printStackTrace();
-        }
         todoAdapter = new TodoAdapter(getActivity(), R.layout.todo_item, todoItems);
         lvItems.setAdapter(todoAdapter);
         setupListViewListener();
