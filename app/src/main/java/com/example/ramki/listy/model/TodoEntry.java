@@ -4,29 +4,34 @@ package com.example.ramki.listy.model;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
+
+import android.support.annotation.NonNull;
+
 /**
- * Entity mapped to table TODO_ENTRIES.
+ * Entity mapped to table TODO_ENTRY.
  */
-public class TodoEntries {
+public class TodoEntry extends TodoEntryComparable  {
 
     private Long id;
+    /** Not-null value. */
     private String title;
     private String notes;
-    private Boolean deleted;
+    private boolean deleted;
+    /** Not-null value. */
     private java.util.Date created_on;
     private java.util.Date due;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
 
-    public TodoEntries() {
+    public TodoEntry() {
     }
 
-    public TodoEntries(Long id) {
+    public TodoEntry(Long id) {
         this.id = id;
     }
 
-    public TodoEntries(Long id, String title, String notes, Boolean deleted, java.util.Date created_on, java.util.Date due) {
+    public TodoEntry(Long id, String title, String notes, boolean deleted, java.util.Date created_on, java.util.Date due) {
         this.id = id;
         this.title = title;
         this.notes = notes;
@@ -43,10 +48,12 @@ public class TodoEntries {
         this.id = id;
     }
 
+    /** Not-null value. */
     public String getTitle() {
         return title;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -59,18 +66,20 @@ public class TodoEntries {
         this.notes = notes;
     }
 
-    public Boolean getDeleted() {
+    public boolean getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
+    /** Not-null value. */
     public java.util.Date getCreated_on() {
         return created_on;
     }
 
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setCreated_on(java.util.Date created_on) {
         this.created_on = created_on;
     }
@@ -84,6 +93,14 @@ public class TodoEntries {
     }
 
     // KEEP METHODS - put your custom methods here
+
+    @Override
+    public int compareTo(@NonNull TodoEntryComparable another) {
+        TodoEntry anotherTodo = (TodoEntry) another;
+        if (this.due == null) return 1;
+        if (anotherTodo.due == null) return -1;
+        return this.due.compareTo(anotherTodo.due);
+    }
     // KEEP METHODS END
 
 }

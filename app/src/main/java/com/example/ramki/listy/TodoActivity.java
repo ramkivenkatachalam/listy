@@ -10,6 +10,9 @@ import android.support.v4.view.ViewPager;
 
 
 import com.example.ramki.listy.ReaderViewPagerTransformer.TransformType;
+import com.example.ramki.listy.model.TodoEntry;
+import com.example.ramki.listy.persistence.TodoListDaoPersistenceManager;
+import com.example.ramki.listy.persistence.TodoListPersistenceManager;
 
 
 import java.util.ArrayList;
@@ -17,8 +20,8 @@ import java.util.List;
 
 
 public class TodoActivity extends FragmentActivity {
-    private List<TodoItem> todoItems = new ArrayList<>();
-    private TodoListManager todoListManager;
+    private List<TodoEntry> todoEntries = new ArrayList<>();
+    private TodoListPersistenceManager _todoListPersistenceManager;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -36,9 +39,9 @@ public class TodoActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        todoListManager = new TodoListDBManager(this);
+        _todoListPersistenceManager = new TodoListDaoPersistenceManager(this);
         try {
-            todoItems = todoListManager.readItems();
+            todoEntries = _todoListPersistenceManager.readItems();
         } catch (TodoListManagerException e) {
             e.printStackTrace();
         }
@@ -48,6 +51,13 @@ public class TodoActivity extends FragmentActivity {
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setPageTransformer(false, new ReaderViewPagerTransformer(TransformType.SLIDE_OVER));
+    }
+
+    @Override
+    protected void onDestroy() {
+        _todoListPersistenceManager.close();
+        super.onDestroy();
+
     }
 
     @Override
@@ -71,28 +81,30 @@ public class TodoActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+            /**
+             * First page is the list (TodoListFragment) and the subsequent ones
+             * are detail for each of the todo (TodoDetailsFragment)
+             *
+             */
             if (position == 0) {
                 // Create a new Fragment to be placed in the activity layout
                 TodoListFragment todoListFragment =  new TodoListFragment();
-                todoListFragment.setTodoItems(todoItems);
-                todoListFragment.setTodoListManager(todoListManager);
+                todoListFragment.setTodoEntries(todoEntries);
+                todoListFragment.setTodoListPersistenceManager(_todoListPersistenceManager);
                 todoListFragment.setPagerAdapter(mPagerAdapter);
                 todoListFragment.setPager(mPager);
                 return todoListFragment;
 
             } else {
-                // TODO: set todoItem arg for the fragment
-                Fragment todoDetailsFragment = new TodoDetailsFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("todo", todoItems.get(position-1));
-                todoDetailsFragment.setArguments(args);
+                TodoDetailsFragment todoDetailsFragment = new TodoDetailsFragment();
+                todoDetailsFragment.setTodo(todoEntries.get(position - 1));
                 return todoDetailsFragment;
             }
         }
 
         @Override
         public int getCount() {
-            return todoItems.size()+1;
+            return todoEntries.size()+1;
         }
     }
 

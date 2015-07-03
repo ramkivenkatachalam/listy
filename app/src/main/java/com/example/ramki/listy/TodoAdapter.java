@@ -11,30 +11,33 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.example.ramki.listy.model.TodoEntry;
+
+
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by ramki on 6/15/15.
+ * Custom Array adapter for ListView of todos
  */
-public class TodoAdapter extends ArrayAdapter<TodoItem> {
+public class TodoAdapter extends ArrayAdapter<TodoEntry> {
 
     Context context;
     int layoutResourceId;
-    List<TodoItem> todos;
+    List<TodoEntry> todos;
 
-    public TodoAdapter(Context context, int resource, List<TodoItem> objects) {
-        super(context, resource, objects);
-        Collections.sort(objects);
+    public TodoAdapter(Context context, int resource, List<TodoEntry> todoList) {
+        super(context, resource, todoList);
+        Collections.sort(todoList);
         this.context = context;
         this.layoutResourceId = resource;
-        this.todos = objects;
+        this.todos = todoList;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        TodoItem todoItem = getItem(position);
+        TodoEntry todoEntry = getItem(position);
         TodoItemHolder holder = new TodoItemHolder();
 
         if(row == null)
@@ -49,8 +52,8 @@ public class TodoAdapter extends ArrayAdapter<TodoItem> {
         {
             holder = (TodoItemHolder)row.getTag();
         }
-        holder.updateDesc(todoItem.getTitle());
-        holder.updateDueDate(todoItem.getDueDate());
+        holder.updateDesc(todoEntry.getTitle());
+        holder.updateDueDate(todoEntry.getDue());
 
         if (position % 2 == 1) {
             row.setBackgroundColor(Color.rgb(238, 248, 248));
