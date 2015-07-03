@@ -1,4 +1,4 @@
-package com.example.ramki.todoapp;
+package com.example.ramki.listy;
 
 import android.provider.BaseColumns;
 

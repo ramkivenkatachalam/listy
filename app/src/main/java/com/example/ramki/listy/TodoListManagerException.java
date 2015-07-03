@@ -1,4 +1,4 @@
-package com.example.ramki.todoapp;
+package com.example.ramki.listy;
 
 /**
  * Created by ramki on 6/27/15.

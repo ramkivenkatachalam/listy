@@ -1,4 +1,4 @@
-package com.example.ramki.todoapp;
+package com.example.ramki.listy;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -80,7 +78,7 @@ public class TodoListFragment extends Fragment {
         lvItems.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                pager.setCurrentItem(position+1, true);
+                pager.setCurrentItem(position + 1, true);
             }
         });
 

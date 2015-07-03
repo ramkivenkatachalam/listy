@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ModuleGenerator/ModuleGenerator.iml" filepath="$PROJECT_DIR$/ModuleGenerator/ModuleGenerator.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/listy.iml" filepath="$PROJECT_DIR$/listy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modelgen/modelgen.iml" filepath="$PROJECT_DIR$/modelgen/modelgen.iml" />
     </modules>
   </component>
 </project>

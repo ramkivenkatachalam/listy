@@ -1,4 +1,4 @@
-package com.example.ramki.todoapp;
+package com.example.ramki.listy;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.ramki.todoapp.TodoReaderContract.TodoEntry;
+import com.example.ramki.listy.TodoReaderContract.TodoEntry;
 
 
 import java.util.ArrayList;
