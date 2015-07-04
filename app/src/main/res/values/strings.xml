@@ -7,4 +7,5 @@
     <string name="today_label">now</string>
     <string name="this_week_label">soon</string>
     <string name="todo_notes_hint_label">add any notes here...</string>
+    <string name="empty_todo_alert">Enter some text before pressing </string>
 </resources>

@@ -1,7 +1,6 @@
 package com.example.ramki.listy;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +9,12 @@ import android.widget.TextView;
 import com.example.ramki.listy.model.TodoEntry;
 
 /**
- * Fragment for showing detailed view of a todo
- * Must call setTodo() after creation
+ * Implementation of ITodoDetailFragment
  */
-public class TodoDetailsFragment extends Fragment {
+public class TodoDetailsFragment extends ITodoDetailFragment {
     private TextView tvTodoTitle;
     private TodoEntry todo;
-
-    public void setTodo(TodoEntry todo) {
-        this.todo = todo;
-    }
+    private OnTodoUpdateHandler updateListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,7 +26,14 @@ public class TodoDetailsFragment extends Fragment {
         return todoDetailsView;
     }
 
-    private void setupListViewListener() {
+    @Override
+    public void setTodoEntry(TodoEntry todoEntry) {
+        this.todo = todoEntry;
+    }
+
+    @Override
+    public void setOnUpdateHandler(OnTodoUpdateHandler listener) {
+        this.updateListener = listener;
     }
 
 }

@@ -1,9 +1,6 @@
 package com.example.ramki.listy;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,10 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
+import android.widget.Toast;
 
 import com.example.ramki.listy.model.TodoEntry;
-import com.example.ramki.listy.persistence.TodoListPersistenceManager;
 
 
 import java.util.Collections;
@@ -27,24 +23,17 @@ import java.util.List;
 /**
  * Fragment for list view of all the todos
  */
-public class TodoListFragment extends Fragment {
-    private List<TodoEntry> _todoEntries;
+public class TodoListFragment extends ITodoListFragment {
+
+    private List<TodoEntry> todoList;
     private TodoAdapter todoAdapter;
     private ListView lvItems;
     private EditText etNew;
     private Button btnAdd;
-    private TodoListPersistenceManager _todoListPersistenceManager;
-    private PagerAdapter pagerAdapter;
-    private ViewPager pager;
+    private OnTodoAddHandler addHandler;
+    private OnTodoDeleteHandler deleteHandler;
+    private OnTodoSelectHandler selectHanlder;
 
-
-    public void setTodoEntries(List<TodoEntry> todoEntries) {
-        this._todoEntries = todoEntries;
-    }
-
-    public void setTodoListPersistenceManager(TodoListPersistenceManager todoListPersistenceManager) {
-        this._todoListPersistenceManager = todoListPersistenceManager;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +44,7 @@ public class TodoListFragment extends Fragment {
         lvItems = (ListView) todoListView.findViewById(R.id.lvItems);
         etNew = (EditText) todoListView.findViewById(R.id.etNew);
         btnAdd = (Button) todoListView.findViewById(R.id.btnAdd);
-        todoAdapter = new TodoAdapter(getActivity(), R.layout.todo_item, _todoEntries);
+        todoAdapter = new TodoAdapter(getActivity(), R.layout.todo_item, todoList);
         lvItems.setAdapter(todoAdapter);
         setupListViewListener();
         return todoListView;
@@ -67,22 +56,18 @@ public class TodoListFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
                 long id) {
-                TodoEntry deleted = _todoEntries.get(position);
-                try {
-                    _todoListPersistenceManager.deleteItem(deleted);
-                } catch (TodoListManagerException e) {
-                    e.printStackTrace();
-                }
-                _todoEntries.remove(position);
+                TodoEntry deleted = todoList.get(position);
+                todoList.remove(position);
                 todoAdapter.notifyDataSetChanged();
-                pagerAdapter.notifyDataSetChanged();
+                deleteHandler.onTodoDelete(deleted);
                 return false;
             }
         });
+
         lvItems.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                pager.setCurrentItem(position + 1, true);
+                selectHanlder.onTodoSelect(position);
             }
         });
 
@@ -91,29 +76,38 @@ public class TodoListFragment extends Fragment {
             public void onClick(View v) {
                 String todoText = etNew.getText().toString();
                 if (todoText.isEmpty()) {
+                    Toast.makeText(getActivity(), "string ", Toast.LENGTH_LONG);
                     return;
                 }
                 TodoEntry newTodo = new TodoEntry(null, todoText, null, false, new Date(), null);
-                try {
-                    newTodo = _todoListPersistenceManager.addItem(newTodo);
-                } catch (TodoListManagerException e) {
-                    e.printStackTrace();
-                }
-                _todoEntries.add(newTodo);
-                Collections.sort(_todoEntries);
+                todoList.add(newTodo);
+                Collections.sort(todoList);
                 todoAdapter.notifyDataSetChanged();
-                pagerAdapter.notifyDataSetChanged();
+                addHandler.onTodoAdd(newTodo);
                 etNew.setText("");
             }
         });
 
     }
 
-    public void setPagerAdapter(PagerAdapter pagerAdapter) {
-        this.pagerAdapter = pagerAdapter;
+    @Override
+    public void setTodoList(List<TodoEntry> todoList) {
+        this.todoList = todoList;
     }
 
-    public void setPager(ViewPager pager) {
-        this.pager = pager;
+    @Override
+    public void setOnAddHandler(OnTodoAddHandler handler) {
+        this.addHandler = handler;
     }
+
+    @Override
+    public void setOnSelectHandler(OnTodoSelectHandler handler) {
+        this.selectHanlder = handler;
+    }
+
+    @Override
+    public void setOnDeleteHandler(OnTodoDeleteHandler handler) {
+        this.deleteHandler = handler;
+    }
+
 }
