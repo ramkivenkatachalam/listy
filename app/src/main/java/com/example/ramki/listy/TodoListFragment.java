@@ -76,7 +76,11 @@ public class TodoListFragment extends ITodoListFragment {
             public void onClick(View v) {
                 String todoText = etNew.getText().toString();
                 if (todoText.isEmpty()) {
-                    Toast.makeText(getActivity(), "string ", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getActivity(),
+                        getString(R.string.empty_todo_alert) + " "
+                            + getString(R.string.add_button_label).toUpperCase(),
+                        Toast.LENGTH_LONG);
+                    toast.show();
                     return;
                 }
                 TodoEntry newTodo = new TodoEntry(null, todoText, null, false, new Date(), null);
