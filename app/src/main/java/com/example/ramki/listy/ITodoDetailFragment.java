@@ -14,4 +14,6 @@ public abstract class ITodoDetailFragment extends Fragment {
 
     // setup handlers for callback
     public abstract void setOnUpdateHandler(OnTodoUpdateHandler handler);
+
+    public abstract void setOnDeleteHandler(OnTodoDeleteHandler handler);
 }

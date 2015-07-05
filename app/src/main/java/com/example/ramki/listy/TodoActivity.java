@@ -94,8 +94,15 @@ public class TodoActivity extends FragmentActivity implements
 
     @Override
     public void onTodoDelete(TodoEntry deleted) {
+        todoList.remove(deleted);
         // update the view pager
+        int i = mPager.getCurrentItem();
         mPagerAdapter.notifyDataSetChanged();
+        if (todoList.size() == 0) {
+            mPager.setCurrentItem(0, true);
+        } else {
+            mPager.setCurrentItem(i, true);
+        }
         // delete from the db
         try {
             todoListPersistenceManager.deleteItem(deleted);
@@ -144,6 +151,7 @@ public class TodoActivity extends FragmentActivity implements
                 ITodoDetailFragment todoDetailsFragment = new TodoDetailsFragment();
                 todoDetailsFragment.setTodoEntry(todoList.get(position - 1));
                 todoDetailsFragment.setOnUpdateHandler((OnTodoUpdateHandler) _activity);
+                todoDetailsFragment.setOnDeleteHandler((OnTodoDeleteHandler) _activity);
                 return todoDetailsFragment;
             }
         }

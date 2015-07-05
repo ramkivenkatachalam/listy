@@ -7,6 +7,10 @@ package com.example.ramki.listy.model;
 
 import android.support.annotation.NonNull;
 
+
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Entity mapped to table TODO_ENTRY.
  */
@@ -21,11 +25,10 @@ public class TodoEntry extends TodoEntryComparable  {
     private java.util.Date created_on;
     private java.util.Date due;
 
-    // KEEP FIELDS - put your custom fields here
-    // KEEP FIELDS END
-
     public TodoEntry() {
     }
+
+    // KEEP FIELDS END
 
     public TodoEntry(Long id) {
         this.id = id;
@@ -92,7 +95,54 @@ public class TodoEntry extends TodoEntryComparable  {
         this.due = due;
     }
 
+    public int getDueEnum() {
+        Date today = new Date(new Date().getTime() / 86400000L * 86400000);
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 7 - c.get(
+            Calendar.DAY_OF_WEEK));
+        Date eow = c.getTime();
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date eom = c.getTime();
+
+        if (due == null)
+            return DueEnum.SOMETIME.getValue();
+        if (today.compareTo(due) > 0)
+            return DueEnum.PAST_DUE.getValue();
+        if (eow.compareTo(due) > 0)
+            return DueEnum.TODAY.getValue();
+        if (eom.compareTo(due) > 0)
+            return DueEnum.THIS_WEEK.getValue();
+        return DueEnum.THIS_MONTH.getValue();
+    }
+
     // KEEP METHODS - put your custom methods here
+
+    public void setDue(int dueEnumVal) {
+        Date today = new Date(new Date().getTime() / 86400000L * 86400000);
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 7 - c.get(
+            Calendar.DAY_OF_WEEK));
+        Date eow = c.getTime();
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Date eom = c.getTime();
+        switch (dueEnumVal) {
+            case 0:
+                break;
+            case 1:
+                due = today;
+                break;
+            case 2:
+                due = eow;
+                break;
+            case 3:
+                due = eom;
+                break;
+            default:
+                due = null;
+        }
+    }
 
     @Override
     public int compareTo(@NonNull TodoEntryComparable another) {
@@ -101,6 +151,44 @@ public class TodoEntry extends TodoEntryComparable  {
         if (anotherTodo.due == null) return -1;
         return this.due.compareTo(anotherTodo.due);
     }
+
+    public TodoEntry copy() {
+        return new TodoEntry(this.id, this.title, this.notes, this.deleted, this.created_on,
+            this.due);
+    }
+
+    public boolean compare(String notes, int dueEnumVal) {
+        if (this.notes == null ^ notes == null)
+            return false;
+        if (this.notes != null && this.notes.compareTo(notes) != 0)
+            return false;
+
+        int d = getDueEnum();
+        return d == dueEnumVal;
+    }
+
+
+    // KEEP FIELDS - put your custom fields here
+    public enum DueEnum {
+        PAST_DUE(0),
+        TODAY(1),
+        THIS_WEEK(2),
+        THIS_MONTH(3),
+        SOMETIME(4);
+
+        private final int value;
+
+        DueEnum(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+
     // KEEP METHODS END
+
 
 }

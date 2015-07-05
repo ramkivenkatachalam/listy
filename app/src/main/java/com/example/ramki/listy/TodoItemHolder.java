@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -27,13 +28,18 @@ public class TodoItemHolder {
     }
 
     public void updateDueDate(Date due) {
+        Date today = new Date(new Date().getTime() / 86400000L * 86400000);
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 7 - c.get(
+            Calendar.DAY_OF_WEEK));
+        Date eow = c.getTime();
+
         String dueLable = null;
         if (due != null) {
-            Date currentDate = new Date();
-            long delta = (due.getTime() - currentDate.getTime())/1000;
-            if (delta < 86400L) {
+            if (today.compareTo(due) >= 0) {
                 dueLable = "now";
-            } else if (delta < (86400L * 7)) {
+            } else if (eow.compareTo(due) >= 0) {
                 dueLable = "soon";
             }
         }
