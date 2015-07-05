@@ -14,7 +14,6 @@ import java.util.Date;
  * Entity mapped to table TODO_ENTRY.
  */
 public class TodoEntry extends TodoEntryComparable  {
-    private static final long DAY_MILLIS = 86400000;
     private Long id;
     /** Not-null value. */
     private String title;
@@ -23,16 +22,18 @@ public class TodoEntry extends TodoEntryComparable  {
     /** Not-null value. */
     private java.util.Date created_on;
     private java.util.Date due;
-    public TodoEntry() {
-    }
 
     // KEEP FIELDS - put your custom fields here
+    private static final long DAY_MILLIS = 86400000;
+    // KEEP FIELDS END
+
+    public TodoEntry() {
+    }
 
     public TodoEntry(Long id) {
         this.id = id;
     }
 
-    // KEEP FIELDS END
 
     public TodoEntry(Long id, String title, String notes, boolean deleted, java.util.Date created_on, java.util.Date due) {
         this.id = id;
@@ -96,6 +97,31 @@ public class TodoEntry extends TodoEntryComparable  {
     }
 
     // KEEP METHODS - put your custom methods here
+
+    /**
+     *  We convert due dates in the UI to values like today, this week, this month etc
+     *  so that it is less complicated for users. These methods are helper methods to convert to
+     *  and from date objects
+     */
+
+    public enum DueEnum {
+        PAST_DUE(0),
+        TODAY(1),
+        THIS_WEEK(2),
+        THIS_MONTH(3),
+        SOMETIME(4);
+
+        private final int value;
+
+        DueEnum(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
 
     public void setDue(int dueEnumVal) {
         Date current = new Date();
@@ -167,31 +193,6 @@ public class TodoEntry extends TodoEntryComparable  {
     public TodoEntry copy() {
         return new TodoEntry(this.id, this.title, this.notes, this.deleted, this.created_on,
             this.due);
-    }
-
-
-    /**
-     *  We convert due dates in the UI to values like today, this week, this month etc
-     *  so that it is less complicated for users. These methods are helper methods to convert to
-     *  and from date objects
-     */
-
-    public enum DueEnum {
-        PAST_DUE(0),
-        TODAY(1),
-        THIS_WEEK(2),
-        THIS_MONTH(3),
-        SOMETIME(4);
-
-        private final int value;
-
-        DueEnum(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
     }
 
 
