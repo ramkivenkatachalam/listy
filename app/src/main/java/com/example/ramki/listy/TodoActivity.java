@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 import com.example.ramki.listy.ReaderViewPagerTransformer.TransformType;
 import com.example.ramki.listy.model.TodoEntry;
@@ -36,6 +37,28 @@ public class TodoActivity extends FragmentActivity implements
      */
     private PagerAdapter mPagerAdapter;
 
+
+    private OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
+
+        int currentPosition = 0;
+
+        @Override
+        public void onPageSelected(int newPosition) {
+            ScreenSlidePagerAdapter _pagerAdapter = (ScreenSlidePagerAdapter) mPagerAdapter;
+            Fragment fragmentToHide = (Fragment) _pagerAdapter.instantiateItem(mPager,
+                currentPosition);
+            fragmentToHide.onPause();
+            currentPosition = newPosition;
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+
+        public void onPageScrollStateChanged(int arg0) {
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +76,7 @@ public class TodoActivity extends FragmentActivity implements
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
         mPager.setAdapter(mPagerAdapter);
         mPager.setPageTransformer(false, new ReaderViewPagerTransformer(TransformType.SLIDE_OVER));
+        mPager.addOnPageChangeListener(pageChangeListener);
     }
 
     @Override
