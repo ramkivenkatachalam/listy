@@ -7,13 +7,11 @@ package com.example.ramki.listy.model;
 
 import android.support.annotation.NonNull;
 
-
-import java.util.Date;
-
 /**
  * Entity mapped to table TODO_ENTRY.
  */
 public class TodoEntry extends TodoEntryComparable  {
+
     private Long id;
     /** Not-null value. */
     private String title;
@@ -33,7 +31,6 @@ public class TodoEntry extends TodoEntryComparable  {
     public TodoEntry(Long id) {
         this.id = id;
     }
-
 
     public TodoEntry(Long id, String title, String notes, boolean deleted, java.util.Date created_on, java.util.Date due) {
         this.id = id;
@@ -124,8 +121,9 @@ public class TodoEntry extends TodoEntryComparable  {
 
 
     public void setDue(int dueEnumVal) {
-        Date current = new Date();
-        Date today = new Date(new Date().getTime() / 86400000L * 86400000);
+        java.util.Date current = new java.util.Date();
+        java.util.Date today = new java.util.Date(new java.util.Date().getTime()
+            / 86400000L * 86400000);
         switch (dueEnumVal) {
             case 0:
                 break;
@@ -133,10 +131,10 @@ public class TodoEntry extends TodoEntryComparable  {
                 due = today;
                 break;
             case 2:
-                due = new Date(today.getTime() + 7 * DAY_MILLIS);
+                due = new java.util.Date(today.getTime() + 7 * DAY_MILLIS);
                 break;
             case 3:
-                due = new Date(today.getTime() + 30 * DAY_MILLIS);
+                due = new java.util.Date(today.getTime() + 30 * DAY_MILLIS);
                 break;
             default:
                 due = null;
@@ -144,8 +142,9 @@ public class TodoEntry extends TodoEntryComparable  {
     }
 
     public int getDueEnum() {
-        Date today = new Date(new Date().getTime() / 86400000L * 86400000);
-        Date week = new Date(today.getTime() + 7 * DAY_MILLIS);
+        java.util.Date today = new java.util.Date(new java.util.Date().getTime()
+            / 86400000L * 86400000);
+        java.util.Date week = new java.util.Date(today.getTime() + 7 * DAY_MILLIS);
 
         if (due == null)
             return DueEnum.SOMETIME.getValue();
@@ -194,9 +193,6 @@ public class TodoEntry extends TodoEntryComparable  {
         return new TodoEntry(this.id, this.title, this.notes, this.deleted, this.created_on,
             this.due);
     }
-
-
     // KEEP METHODS END
-
 
 }
