@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.example.ramki.listy.model.TodoEntry;
 
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import java.util.List;
  * Fragment for list view of all the todos
  */
 public class TodoListFragment extends ITodoListFragment {
-
     private List<TodoEntry> todoList;
     private TodoAdapter todoAdapter;
     private ListView lvItems;
@@ -44,7 +42,6 @@ public class TodoListFragment extends ITodoListFragment {
         lvItems = (ListView) todoListView.findViewById(R.id.lvItems);
         etNew = (EditText) todoListView.findViewById(R.id.etNew);
         btnAdd = (Button) todoListView.findViewById(R.id.btnAdd);
-        todoAdapter = new TodoAdapter(getActivity(), R.layout.todo_item, todoList);
         lvItems.setAdapter(todoAdapter);
         setupListViewListener();
         return todoListView;
@@ -57,8 +54,6 @@ public class TodoListFragment extends ITodoListFragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
                 long id) {
                 TodoEntry deleted = todoList.get(position);
-                todoList.remove(position);
-                todoAdapter.notifyDataSetChanged();
                 deleteHandler.onTodoDelete(deleted);
                 return false;
             }
@@ -75,6 +70,7 @@ public class TodoListFragment extends ITodoListFragment {
             @Override
             public void onClick(View v) {
                 String todoText = etNew.getText().toString();
+                etNew.setText("");
                 if (todoText.isEmpty()) {
                     Toast toast = Toast.makeText(getActivity(),
                         getString(R.string.empty_todo_alert) + " "
@@ -84,11 +80,7 @@ public class TodoListFragment extends ITodoListFragment {
                     return;
                 }
                 TodoEntry newTodo = new TodoEntry(null, todoText, null, false, new Date(), null);
-                todoList.add(newTodo);
-                Collections.sort(todoList);
-                todoAdapter.notifyDataSetChanged();
                 addHandler.onTodoAdd(newTodo);
-                etNew.setText("");
             }
         });
 
@@ -97,6 +89,10 @@ public class TodoListFragment extends ITodoListFragment {
     @Override
     public void setTodoList(List<TodoEntry> todoList) {
         this.todoList = todoList;
+    }
+
+    public void setTodoAdapter(TodoAdapter todoAdapter) {
+        this.todoAdapter = todoAdapter;
     }
 
     @Override

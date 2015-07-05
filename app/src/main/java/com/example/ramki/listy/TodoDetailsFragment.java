@@ -20,6 +20,7 @@ import java.util.Date;
  */
 public class TodoDetailsFragment extends ITodoDetailFragment {
 
+    private boolean isValid = false;
     private EditText etTodoTitle;
     private EditText etTodoNote;
     private ImageButton btnDelete;
@@ -33,6 +34,7 @@ public class TodoDetailsFragment extends ITodoDetailFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
+        isValid = true;
         Log.i("TodoDetailsFragment", "onCreateView : " + todo.toString());
 
         // Inflate the layout for this fragment
@@ -51,12 +53,16 @@ public class TodoDetailsFragment extends ITodoDetailFragment {
 
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void checkForUpdates() {
+        if (!isValid)
+            return;
+        Log.i("TodoDetailsFragment", "inside checkForUpdates: " + todo);
         TodoEntry updatedTodo = todo.copy();
         final String notes = etTodoNote.getText().toString();
         Date due = todo.getDue();
         int d = sbDue.getProgress();
+        Log.i("TodoDetailsFragment",
+            "inside checkForUpdates: " + todo.getTitle() + ", " + notes + ", " + d);
 
         // see if the todo is updated and if so, call the update handler
         if (!todo.compare(notes, d)) {
@@ -71,6 +77,7 @@ public class TodoDetailsFragment extends ITodoDetailFragment {
         btnDelete.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                isValid = false;
                 deleteHandler.onTodoDelete(todo);
             }
         });

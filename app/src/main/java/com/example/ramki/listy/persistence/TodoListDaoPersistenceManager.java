@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.ramki.listy.TodoListManagerException;
 import com.example.ramki.listy.model.DaoMaster;
 import com.example.ramki.listy.model.DaoSession;
 import com.example.ramki.listy.model.TodoEntry;
@@ -14,6 +13,9 @@ import com.example.ramki.listy.model.TodoEntryDao.Properties;
 
 import java.util.List;
 
+/**
+ * Class that helps manage (CRUD) todos in the DB. Wraps GreenDAO DAO object
+ */
 public class TodoListDaoPersistenceManager implements TodoListPersistenceManager {
 
     public static final String DATABASE_NAME = "todoentry.db";
@@ -37,13 +39,13 @@ public class TodoListDaoPersistenceManager implements TodoListPersistenceManager
      * All CRUD(Create, Read, Update, Delete) Operations
      */
     @Override
-    public List<TodoEntry> readItems() throws TodoListManagerException {
+    public List<TodoEntry> readItems() throws TodoListPersistenceManagerException {
         return todoEntryDao.queryBuilder().where(Properties.Deleted.eq(false)).orderDesc(
             Properties.Due).list();
     }
 
     @Override
-    public TodoEntry addItem(TodoEntry todo) throws TodoListManagerException {
+    public TodoEntry addItem(TodoEntry todo) throws TodoListPersistenceManagerException {
         long newRowId = todoEntryDao.insert(todo);
         todo.setId(newRowId);
         Log.d("inserted item: ", todo.toString());
@@ -51,13 +53,13 @@ public class TodoListDaoPersistenceManager implements TodoListPersistenceManager
     }
 
     @Override
-    public void deleteItem(TodoEntry todo) throws TodoListManagerException {
+    public void deleteItem(TodoEntry todo) throws TodoListPersistenceManagerException {
         todo.setDeleted(true);
         todoEntryDao.update(todo);
     }
 
     @Override
-    public int updateItem(TodoEntry todo) throws TodoListManagerException {
+    public int updateItem(TodoEntry todo) throws TodoListPersistenceManagerException {
         todoEntryDao.update(todo);
         return (int) todo.getId().longValue();
     }

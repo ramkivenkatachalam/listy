@@ -14,13 +14,13 @@ import java.util.List;
 
 public abstract class ITodoListFragment extends Fragment {
 
-    // set todolist to display
+    // set todolist and todoadapter to display
     public abstract void setTodoList(List<TodoEntry> todoList);
+
+    public abstract void setTodoAdapter(TodoAdapter todoAdapter);
 
     // setup handlers for all events
     public abstract void setOnAddHandler(OnTodoAddHandler handler);
-
     public abstract void setOnSelectHandler(OnTodoSelectHandler handler);
-
     public abstract void setOnDeleteHandler(OnTodoDeleteHandler handler);
 }

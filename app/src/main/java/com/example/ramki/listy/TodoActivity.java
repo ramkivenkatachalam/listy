@@ -9,20 +9,30 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.widget.Toast;
 
 import com.example.ramki.listy.ReaderViewPagerTransformer.TransformType;
 import com.example.ramki.listy.model.TodoEntry;
 import com.example.ramki.listy.persistence.TodoListDaoPersistenceManager;
 import com.example.ramki.listy.persistence.TodoListPersistenceManager;
+import com.example.ramki.listy.persistence.TodoListPersistenceManagerException;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Main Activity for listy app. Uses two type of fragments (ITodoListFragment and
+ * ITodoDetailFragment)
+ * to make the app dynamic.
+ * <p/>
+ * This activity implements all the callback handlers that are expected from the Fragments
+ */
 public class TodoActivity extends FragmentActivity implements
     OnTodoUpdateHandler, OnTodoAddHandler, OnTodoDeleteHandler, OnTodoSelectHandler {
 
+    TodoAdapter todoAdapter;
     private List<TodoEntry> todoList = new ArrayList<>();
     private TodoListPersistenceManager todoListPersistenceManager;
 
@@ -38,6 +48,10 @@ public class TodoActivity extends FragmentActivity implements
     private PagerAdapter mPagerAdapter;
 
 
+    /**
+     * Custom OnPageChangeListener for the viewPager to ensure that we save
+     * changes to the todo entry rightaway!
+     */
     private OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
 
         int currentPosition = 0;
@@ -47,7 +61,9 @@ public class TodoActivity extends FragmentActivity implements
             ScreenSlidePagerAdapter _pagerAdapter = (ScreenSlidePagerAdapter) mPagerAdapter;
             Fragment fragmentToHide = (Fragment) _pagerAdapter.instantiateItem(mPager,
                 currentPosition);
-            fragmentToHide.onPause();
+            if (fragmentToHide instanceof ITodoDetailFragment) {
+                ((ITodoDetailFragment) fragmentToHide).checkForUpdates();
+            }
             currentPosition = newPosition;
         }
 
@@ -67,9 +83,10 @@ public class TodoActivity extends FragmentActivity implements
         todoListPersistenceManager = new TodoListDaoPersistenceManager(this);
         try {
             todoList = todoListPersistenceManager.readItems();
-        } catch (TodoListManagerException e) {
+        } catch (TodoListPersistenceManagerException e) {
             e.printStackTrace();
         }
+        todoAdapter = new TodoAdapter(this, R.layout.todo_item, todoList);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -83,7 +100,6 @@ public class TodoActivity extends FragmentActivity implements
     protected void onDestroy() {
         todoListPersistenceManager.close();
         super.onDestroy();
-
     }
 
     @Override
@@ -102,10 +118,12 @@ public class TodoActivity extends FragmentActivity implements
 
     @Override
     public void onTodoAdd(TodoEntry todo) {
+        todoList.add(todo);
+        todoAdapter.notifyDataSetChanged();
         mPagerAdapter.notifyDataSetChanged();
         try {
             todo = todoListPersistenceManager.addItem(todo);
-        } catch (TodoListManagerException e) {
+        } catch (TodoListPersistenceManagerException e) {
             e.printStackTrace();
         }
     }
@@ -119,36 +137,40 @@ public class TodoActivity extends FragmentActivity implements
     @Override
     public void onTodoDelete(TodoEntry deleted) {
         todoList.remove(deleted);
-        // update the view pager
-        int i = mPager.getCurrentItem();
-        mPagerAdapter.notifyDataSetChanged();
-        if (todoList.size() == 0) {
-            mPager.setCurrentItem(0, true);
-        } else {
-            mPager.setCurrentItem(i, true);
-        }
         // delete from the db
         try {
             todoListPersistenceManager.deleteItem(deleted);
-        } catch (TodoListManagerException e) {
+        } catch (TodoListPersistenceManagerException e) {
             e.printStackTrace();
         }
+        todoAdapter.notifyDataSetChanged();
+        mPagerAdapter.notifyDataSetChanged();
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), this);
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(0, true);
+        Toast toast = Toast.makeText(this, getString(R.string.todo_deleted_toast),
+            Toast.LENGTH_LONG);
+        toast.show();
+
     }
 
     @Override
     public void onTodoUpdate(TodoEntry todo) {
+        todoAdapter.notifyDataSetChanged();
+        mPagerAdapter.notifyDataSetChanged();
+
         // update in the db
         try {
             todoListPersistenceManager.updateItem(todo);
-        } catch (TodoListManagerException e) {
+        } catch (TodoListPersistenceManagerException e) {
             e.printStackTrace();
         }
     }
 
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-
         private final Activity _activity;
+        private int baseId = 0;
 
         public ScreenSlidePagerAdapter(FragmentManager fm, Activity activity) {
             super(fm);
@@ -166,6 +188,7 @@ public class TodoActivity extends FragmentActivity implements
                 // Create a new Fragment to be placed in the activity layout
                 ITodoListFragment todoListFragment = new TodoListFragment();
                 todoListFragment.setTodoList(todoList);
+                todoListFragment.setTodoAdapter(todoAdapter);
                 todoListFragment.setOnAddHandler((OnTodoAddHandler) _activity);
                 todoListFragment.setOnDeleteHandler((OnTodoDeleteHandler) _activity);
                 todoListFragment.setOnSelectHandler((OnTodoSelectHandler) _activity);
@@ -173,7 +196,7 @@ public class TodoActivity extends FragmentActivity implements
 
             } else {
                 ITodoDetailFragment todoDetailsFragment = new TodoDetailsFragment();
-                todoDetailsFragment.setTodoEntry(todoList.get(position - 1));
+                todoDetailsFragment.setTodoEntry(todoList.get((position - 1) % todoList.size()));
                 todoDetailsFragment.setOnUpdateHandler((OnTodoUpdateHandler) _activity);
                 todoDetailsFragment.setOnDeleteHandler((OnTodoDeleteHandler) _activity);
                 return todoDetailsFragment;
@@ -183,6 +206,12 @@ public class TodoActivity extends FragmentActivity implements
         @Override
         public int getCount() {
             return todoList.size() + 1;
+        }
+
+        //this is called when notifyDataSetChanged() is called
+        @Override
+        public int getItemPosition(Object object) {
+            return PagerAdapter.POSITION_UNCHANGED;
         }
     }
 

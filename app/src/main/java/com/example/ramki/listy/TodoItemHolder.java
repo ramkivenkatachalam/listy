@@ -5,11 +5,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by ramki on 6/16/15.
+ * Helper class to set UI elements based on the value of the underlying object
  */
 public class TodoItemHolder {
     private TextView desc;
@@ -29,17 +28,13 @@ public class TodoItemHolder {
 
     public void updateDueDate(Date due) {
         Date today = new Date(new Date().getTime() / 86400000L * 86400000);
-        Calendar c = Calendar.getInstance();
-        c.setTime(today);
-        c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 7 - c.get(
-            Calendar.DAY_OF_WEEK));
-        Date eow = c.getTime();
+        Date week = new Date(today.getTime() + 7 * 86400000L);
 
         String dueLable = null;
         if (due != null) {
             if (today.compareTo(due) >= 0) {
                 dueLable = "now";
-            } else if (eow.compareTo(due) >= 0) {
+            } else if (week.compareTo(due) >= 0) {
                 dueLable = "soon";
             }
         }
