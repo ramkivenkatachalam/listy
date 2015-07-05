@@ -1,7 +1,7 @@
 package com.example.ramki.listy;
 
 /**
- * Created by ramki on 7/3/15.
+ * Activity needs to implement this interface to handle OnTodoSelect callback from fragment
  */
 public interface OnTodoSelectHandler {
 

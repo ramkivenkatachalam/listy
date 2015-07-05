@@ -5,9 +5,10 @@
     <string name="add_todo_hint_label">Add new item here</string>
     <string name="add_button_label">Add</string>
     <string name="today_label">today</string>
-    <string name="this_week_label">this week</string>
-    <string name="this_month_label">this month</string>
+    <string name="this_week_label">week</string>
+    <string name="this_month_label">month</string>
     <string name="todo_notes_hint_label">add any notes here...</string>
     <string name="empty_todo_alert">Enter some text before pressing </string>
+    <string name="todo_deleted_toast">TODO deleted</string>
     <string name="now_label">now</string>
 </resources>

@@ -14,6 +14,9 @@ public abstract class ITodoDetailFragment extends Fragment {
 
     // setup handlers for callback
     public abstract void setOnUpdateHandler(OnTodoUpdateHandler handler);
-
     public abstract void setOnDeleteHandler(OnTodoDeleteHandler handler);
+
+    // is called when the Fragment is no longer in view, more efficient to
+    // check for updates once instead of for any ui updates
+    public abstract void checkForUpdates();
 }
