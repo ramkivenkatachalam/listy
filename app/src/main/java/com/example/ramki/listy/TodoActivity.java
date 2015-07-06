@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.example.ramki.listy.ReaderViewPagerTransformer.TransformType;
@@ -94,6 +96,16 @@ public class TodoActivity extends FragmentActivity implements
         mPager.setAdapter(mPagerAdapter);
         mPager.setPageTransformer(false, new ReaderViewPagerTransformer(TransformType.SLIDE_OVER));
         mPager.addOnPageChangeListener(pageChangeListener);
+        View vHeader = findViewById(R.id.header);
+
+        // Go to the list view on header click
+        vHeader.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPager.setCurrentItem(0, true);
+            }
+        });
+
     }
 
     @Override
